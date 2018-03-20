@@ -1,4 +1,6 @@
+triptic/aux
 *.aux
+*.nav
 *.glo
 *.idx
 *.log
