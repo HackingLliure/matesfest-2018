@@ -1,3 +1,0 @@
-#!/bin/bash
-
-pdflatex -output-directory=aux -aux-directory=aux main.tex; mv aux/main.pdf .
