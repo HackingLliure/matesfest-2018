@@ -15,6 +15,8 @@ dotenv.load();
 // Controllers
 var HomeController = require('./controllers/home');
 var BlockchainController = require('./controllers/blockchain');
+var AccountController = require('./controllers/account');
+var TransactionController = require('./controllers/transaction');
 var contactController = require('./controllers/contact');
 
 var app = express();
@@ -34,6 +36,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', HomeController.index);
 app.get('/blockchain', BlockchainController.index);
+app.get('/account', AccountController.index);
+app.get('/transaction', TransactionController.index);
 app.get('/contact', contactController.contactGet);
 app.post('/contact', contactController.contactPost);
 
