@@ -1,4 +1,5 @@
 var express = require('express');
+var cookieParser = require('cookie-parser'); 
 var path = require('path');
 var logger = require('morgan');
 var compression = require('compression');
@@ -33,6 +34,7 @@ app.use(methodOverride('_method'));
 app.use(session({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: true }));
 app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
 
 app.get('/', HomeController.index);
 app.get('/blockchain', BlockchainController.index);
