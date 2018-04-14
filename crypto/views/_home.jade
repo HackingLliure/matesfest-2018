@@ -15,13 +15,11 @@ block content
         for info in messages.info
           div= info.msg
 
-    .text-center
-      h2 Welcome to the crypto simulator.
-      .col
-        .row-sm-4
-          h4 Your ID is 
-        .row-sm-4
-          h3 #{id[0]}
-      
-      a.btn.btn-default(href='/', role='button') Go to control panel
+    block welcome
+      .text-center
+        h4 Welcome to the crypto simulator. Your ID is 
+        h2 #{id[0]}
+    block link
+      .text-center
+        a.btn.btn-default(href='/', role='button') Go to control panel
           

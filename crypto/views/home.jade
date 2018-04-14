@@ -1,10 +1,6 @@
 extends layout
 
 block content
-
-  .text-center
-    h2 Your id is #{id}
-
   .container-fluid
     if messages.error
       .alert.alert-danger(role='alert')
@@ -19,7 +15,10 @@ block content
         for info in messages.info
           div= info.msg
 
-    .row
+    .row.text-center
+      h3 Your id is #{id}
+      
+    .row.text-center
       .col-sm-4
         .panel
           .panel-body
