@@ -1,26 +1,30 @@
-triptic/aux
-*.aux
-*.nav
-*.glo
-*.idx
+lib-cov
+*.seed
 *.log
-*.toc
-*.ist
-*.acn
-*.acr
-*.alg
-*.bbl
-*.blg
-*.dvi
-*.glg
-*.gls
-*.ilg
-*.ind
-*.lof
-*.lot
-*.maf
-*.mtc
-*.mtc1
+*.csv
+*.dat
 *.out
-*.synctex.gz
-*.snm
+*.pid
+*.gz
+*.swp
+
+pids
+logs
+results
+tmp
+coverage
+
+# API keys
+.env
+
+# Dependency directory
+node_modules
+bower_components
+
+# Editors
+.idea
+*.iml
+
+# OS metadata
+.DS_Store
+Thumbs.db
