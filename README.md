@@ -13,9 +13,9 @@ Design/ui: I would personally use Bootstrap (v3 or 4, I don't really mind).
 
 ## Tasks
 
-[ ] Create keys at first access and store into a cookie
-[ ] Define database schema
-[ ] Visualize blocks and transactions
-[ ] Compute account (public key) status from transactions
-[ ] Make transactions
-[ ] Mining
+- [ ] Create keys at first access and store into a cookie
+- [ ] Define database schema
+- [ ] Visualize blocks and transactions
+- [ ] Compute account (public key) status from transactions
+- [ ] Make transactions
+- [ ] Mining
