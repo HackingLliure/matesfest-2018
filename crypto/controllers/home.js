@@ -17,8 +17,6 @@ console.log(verify.verify(publicKey, signature));
 */
 
 const NodeRSA = require('node-rsa');
-let key = new NodeRSA();
-let keyHash = new NodeRSA({b: 512});
 
 exports.index = function(req, res) {
   // Get session cookies
@@ -26,28 +24,27 @@ exports.index = function(req, res) {
 
   // Check if session cookie exists
   if(!cookies["id"]) {
+    let key = new NodeRSA();
+    let keyHash = new NodeRSA({b: 512});
 
-    // Low e
     key.generateKeyPair(128, 2111);
-    id = keyHash.encrypt( key.exportKey('public') , 'hex').substring(0, 8);
-    cookies["id"] =  [ id, key.exportKey('public'), key.exportKey('private') ];
+    id = keyHash.encrypt( key.exportKey('public') , 'hex').substring(0, 8);   // Hash the public key and generate a pseudo-unique id
 
-    res.cookie("id", cookies["id"][0]);
-    res.cookie("public-key", cookies["id"][1]);
-    res.cookie("private-key", cookies["id"][2]);
+    // Store the user cookies
+    res.cookie("id", id);
+    res.cookie("public-key", key.exportKey('public'));
+    res.cookie("private-key", key.exportKey('private'));
     
+    // Render first-time home
     res.render('_home', {
       title: 'Home',
-      id: cookies["id"]
+      id: id
     });
-
   } else {
-
+    // If cookie exists render control panel
     res.render('home', {
       title: 'Home',
       id: cookies["id"]
     });
-
   }
-
 };
