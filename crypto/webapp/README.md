@@ -8,12 +8,7 @@ Created by [3nr1c](https://github.com/3nr1c), [dabytmc](https://github.com/dabyt
 - **Template Engine**: jade
 - **CSS Framework**: bootstrap
 - **CSS Preprocessor**: css
-- **JavaScript Framework**: 
-- **Build Tool**: none
-- **Unit Testing**: none
 - **Database**: sqlite
-- **Authentication**: 
-- **Deployment**: none
 
 ### How-to
 
