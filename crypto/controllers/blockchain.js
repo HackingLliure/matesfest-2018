@@ -13,10 +13,30 @@ exports.index = function(req, res) {
 	    console.log(row);
 	});
 
+	/*
+	SELECT * FROM blocks; .each(err, row) {
+		this.transactions.append(SELECT * FROM transactions where 'block_id' = row.id)
+	}
+	*/
+
 	//console.log(unsecured_transactions);
 
 	res.render('blockchain', {
 		title: 'Blockchain',
 		//unsecured_transactions: unsecured_transactions
+		blockchain: [
+			{
+				id: "1337",
+				timestamp: "123412512",
+				transactions: [
+					{
+						from: "me",
+						to: "you",
+						amount: 1,
+						signature: "34812654198052463976769"
+					}
+				]
+			}
+		]
 	});
 };

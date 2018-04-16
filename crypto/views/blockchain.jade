@@ -15,8 +15,34 @@ block content
         for info in messages.info
           div= info.msg
 
-    .tow
-      .col-sm-4
+    .row
+      .col-sm-2
+      .col-sm-8
         .panel
           .panel-body
             h1 Blockchain
+            p The blockchain is the record of <i>every</i> transaction that's ever been made using this coin.
+
+    .row
+      for block in blockchain
+        .col-sm-2
+        .col-sm-8
+          .panel
+            .panel-body
+              h3 Block #{block.id}
+              p &#x023f0; Mined: <i>#{block.timestamp}</i>
+              h4 Transactions in this block
+              table(width='100%')
+                tr
+                  th From
+                  th To
+                  th Amount
+                  th Signature
+                for transaction in block.transactions
+                  tr
+                    td #{transaction.from}
+                    td #{transaction.to}
+                    td #{transaction.amount}$
+                    td #{transaction.signature}
+
+
