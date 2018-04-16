@@ -11,7 +11,10 @@ create table "transactions" (
 );
 
 create table "blocks" (
-	"id" text not null, /* hash of the transactions */
+	"id" text not null,
 	"timestamp" integer not null,
+	"hash" text not null,
+	"proof" text not null, 
+	"parent_block" text,
 	primary key ("id")
 );
