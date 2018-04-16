@@ -23,13 +23,23 @@ exports.index = function(req, res) {
 			console.log(err);
 		} else {
 			rows.forEach((row) => {
+				let obj = { from: null, to: null, amount: null }
 				if (row.to == id) {
 					balance += row.amount;
+
+					obj.from = row.from; 
+					obj.to = row.to;
+					obj.amount = row.amount;
+					transactions.push(obj);
+				
 				} else if (row.from == id) {
 					balance -= row.amount;
+				
+					obj.from = row.from; 
+					obj.to = row.to;
+					obj.amount = row.amount;
+					transactions.push(obj);
 				}
-				let obj = { from: row.from, to: row.to, amount: row.amount }
-				transactions.push(obj);
 			});
 			res.render('account', {
 			    	title: 'Account',
