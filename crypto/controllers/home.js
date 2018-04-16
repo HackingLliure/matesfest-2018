@@ -18,6 +18,7 @@ console.log(verify.verify(publicKey, signature));
 
 const NodeRSA = require('node-rsa');
 const sqlite3 = require('sqlite3');
+
 let key = new NodeRSA();
 let private_db = new sqlite3.Database('private.sqlite3', (err) => {
   if (err) {
@@ -32,13 +33,11 @@ let blockchain_db = new sqlite3.Database('blockchain.sqlite3', (err) => {
   console.log('Connected to the blockchain database.');
 });
 
-function randomInt (low, high) {
-    return Math.floor(Math.random() * (high - low) + low);
+function generate_id() {
+  let key = new NodeRSA({b: 512});
+  let keyHash = new NodeRSA({b: 512});
+  return keyHash.encrypt( key.exportKey('public') , 'hex').substring(0, 8);
 }
-
-String.prototype.paddingLeft = function (paddingValue) {
-   return String(paddingValue + this).slice(-paddingValue.length);
-};
 
 exports.index = function(req, res) {
   // Get session cookies
@@ -47,11 +46,10 @@ exports.index = function(req, res) {
   // Check if session cookie exists
   if(!cookies["id"]) {
     let key = new NodeRSA();
-    let keyHash = new NodeRSA({b: 512});
 
     key.generateKeyPair(128, 2111);
-    id = keyHash.encrypt( key.exportKey('public') , 'hex').substring(0, 8);   // Hash the public key and generate a pseudo-unique id
-    secret = randomInt(0, 999999).toString().paddingLeft('000000');
+    id = generate_id();   // Hash the public key and generate a pseudo-unique id
+    secret = generate_id();
 
     // Store account into database
     // TODO: create and store the secret

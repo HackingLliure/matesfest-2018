@@ -15,8 +15,21 @@ block content
         for info in messages.info
           div= info.msg
 
-    .tow
-      .col-sm-4
-        .panel
-          .panel-body
-            h1 Account
+  .row    
+    .col-sm-4  
+      .panel
+        .panel-body
+          h1 Account
+  .row
+    .col-sm-4
+      .panel
+        .panel-body
+          h2 Balance
+          h3 #{balance} SHT
+    .col-sm-4
+      .panel
+        .panel-body
+          h2 Transactions
+          ul
+            each t in transactions
+              h4 #{t.amount} SHT from #{t.from} to #{t.to}  
