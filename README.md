@@ -13,8 +13,8 @@ Additionally, the first time the user accesses the app, a new address (public/pr
 
 ## Tasks
 
-- [ ] Create keys at first access and store into a cookie
-- [ ] Define database schema
+- [x] Create keys at first access and store into a cookie
+- [x] Define database schema
 - [ ] Visualize blocks and transactions
 - [ ] Compute account (public key) status from transactions
 - [ ] Make transactions
