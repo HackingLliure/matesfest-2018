@@ -19,12 +19,26 @@ console.log(verify.verify(publicKey, signature));
 const NodeRSA = require('node-rsa');
 const sqlite3 = require('sqlite3');
 let key = new NodeRSA();
-let db = new sqlite3.Database('private.sqlite3', (err) => {
+let private_db = new sqlite3.Database('private.sqlite3', (err) => {
   if (err) {
     console.error(err.message);
   }
   console.log('Connected to the private database.');
 });
+let blockchain_db = new sqlite3.Database('blockchain.sqlite3', (err) => {
+  if (err) {
+    console.error(err.message);
+  }
+  console.log('Connected to the blockchain database.');
+});
+
+function randomInt (low, high) {
+    return Math.floor(Math.random() * (high - low) + low);
+}
+
+String.prototype.paddingLeft = function (paddingValue) {
+   return String(paddingValue + this).slice(-paddingValue.length);
+};
 
 exports.index = function(req, res) {
   // Get session cookies
@@ -37,28 +51,35 @@ exports.index = function(req, res) {
 
     key.generateKeyPair(128, 2111);
     id = keyHash.encrypt( key.exportKey('public') , 'hex').substring(0, 8);   // Hash the public key and generate a pseudo-unique id
-    
+    secret = randomInt(0, 999999).toString().paddingLeft('000000');
+
     // Store account into database
     // TODO: create and store the secret
-    db.run(`INSERT INTO accounts (id, secret, public, private) VALUES(?,?,?,?)`, 
-    	[id, '', key.exportKey('public'), key.exportKey('private')]
+    private_db.run(`INSERT INTO accounts (id, secret, public, private) VALUES(?,?,?,?)`, 
+    	[id, secret, key.exportKey('public'), key.exportKey('private')]
     );
+    blockchain_db.run(`INSERT INTO transactions ('timestamp', 'from', 'to', 'amount', 'signature') VALUES(?,?,?,?,?)`,
+    	[Math.floor(new Date() / 1000), "000000", id, 1, '']
+    ); // WIPWIPWIPWIPWIP
 
     // Store the user cookies
     res.cookie("id", id);
+    res.cookie("secret", secret);
     res.cookie("public-key", key.exportKey('public'));
     res.cookie("private-key", key.exportKey('private'));
     
     // Render first-time home
     res.render('_home', {
       title: 'Home',
-      id: id
+      id: id,
+      secret: secret
     });
   } else {
     // If cookie exists render control panel
     res.render('home', {
       title: 'Home',
-      id: cookies["id"]
+      id: cookies["id"],
+      secret: cookies["secret"]
     });
   }
 };
