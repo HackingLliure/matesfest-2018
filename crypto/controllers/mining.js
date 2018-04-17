@@ -17,7 +17,7 @@ let private_db = new sqlite3.Database('private.sqlite3', (err) => {
 });
 
 function get_pending_transactions(callback) {
-	blockchain_db.all(`SELECT * FROM transactions;`, callback);	
+	blockchain_db.all(`SELECT * FROM transactions WHERE block_id = 'null';`, callback);	
 }
 
 function get_public(from, callback){
@@ -32,15 +32,15 @@ exports.index = function(req, res) {
 			console.log(err);
 			return;
 		}
-		let checked_signatures = [];
 
-		
+		let checked_signatures = [];
 		async.forEachOf(rows, function (row, key, callback) {
 			get_public(row.from,
 				function (err, sol) {
 					if (err) {
 						return callback(err);
 					} else if (sol != undefined) {
+						console.log(row);
 						let buffer = row.from + row.to + row.amount;
 						let key = new NodeRSA();
 						key.importKey(sol.public);

@@ -76,14 +76,14 @@ exports.index = function(req, res) {
         if (err) {
           console.log(err);
         } else if (row != undefined) {
-          // console.log(row);
-          let buffer = row.id + id + "1";
+          let timestamp = Math.floor(new Date() / 1000);
+          let buffer = row.id + id + "1" + String(timestamp);
           let keyZero = new NodeRSA(row.private);
           let signature = keyZero.sign(buffer, "base64");
           // console.log(signature);
           
-          blockchain_db.run(`INSERT INTO transactions ('timestamp', 'from', 'to', 'amount', 'signature') VALUES(?,?,?,?,?)`,
-          	[Math.floor(new Date() / 1000), row.id, id, 1, signature]
+          blockchain_db.run(`INSERT INTO transactions ('timestamp', 'from', 'to', 'amount', 'signature', 'block_id') VALUES(?,?,?,?,?,?)`,
+          	[timestamp, row.id, id, 1, signature, "null"]
           );
         }
     });

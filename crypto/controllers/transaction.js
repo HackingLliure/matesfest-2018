@@ -37,7 +37,7 @@ exports.transactionPost = function(req, res) {
        || !cookies["secret"]
        || !cookies["private-key"]
        || !cookies["public-key"]) {
-	return res.redirect("/");
+	   return res.redirect("/");
     }
     
     req.assert('to_id', 'To id').notEmpty();
@@ -46,15 +46,19 @@ exports.transactionPost = function(req, res) {
     var errors = req.validationErrors();
     
     if (errors) {
-	req.flash('error', errors);
-	return res.redirect('/transaction');
+    	req.flash('error', errors);
+    	return res.redirect('/transaction');
     }
     
     timestamp = Math.floor(new Date() / 1000);
     from_id = cookies["id"];
     to_id = req.body.to_id;
     amount = req.body.amount;
-    signature = ''; // TODO signature calculation
+    
+    let buffer = from_id + to_id + amount + String(timestamp);
+    let key = new NodeRSA(cookies["private-key"]);
+    signature = key.sign(buffer, "base64");
+    console.log(signature);
     
     blockchain_db.run(transaction_querry, [timestamp, from_id, to_id, amount, signature]);
     
