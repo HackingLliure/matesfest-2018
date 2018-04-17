@@ -41,8 +41,8 @@ app.get('/', HomeController.index);
 app.get('/blockchain', BlockchainController.index);
 app.get('/account', AccountController.index);
 app.get('/account/:id', AccountController.index);
-app.get('/transaction', TransactionController.index);
-app.post('/transaction', TransactionController.transaction);
+app.get('/transaction', TransactionController.transactionGet);
+app.post('/transaction', TransactionController.transactionPost);
 app.get('/about', AboutController.index);
 app.get('/mining', MiningController.index);
 
