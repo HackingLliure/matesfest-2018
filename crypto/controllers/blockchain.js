@@ -8,35 +8,46 @@ let blockchain_db = new sqlite3.Database('blockchain.sqlite3', (err) => {
 
 exports.index = function(req, res) {
 
-	blockchain_db.each(
-		`SELECT * FROM transactions WHERE block_id is NULL;`, function(err, row) {
-	    console.log(row);
-	});
+	let unverified_transactions = [];
+	let blockchain = [];
 
-	/*
-	SELECT * FROM blocks; .each(err, row) {
-		this.transactions.append(SELECT * FROM transactions where 'block_id' = row.id)
-	}
-	*/
+	blockchain_db.all(
+		`SELECT * FROM transactions WHERE block_id is NULL;`, (err, rows) => {
+	    if (err) {
+	    	console.log(err);
+	    	return false;
+	    }
+		rows.forEach((row) => {
+	    	unverified_transactions.push(row);
+		});
 
-	//console.log(unsecured_transactions);
-
-	res.render('blockchain', {
-		title: 'Blockchain',
-		//unsecured_transactions: unsecured_transactions
-		blockchain: [
-			{
-				id: "1337",
-				timestamp: "123412512",
-				transactions: [
-					{
-						from: "me",
-						to: "you",
-						amount: 1,
-						signature: "34812654198052463976769"
-					}
-				]
+		blockchain_db.all(`SELECT * FROM blocks;`, (err, rows) => {
+			if (err) {
+				console.log(err);
+				return false;
 			}
-		]
+
+			rows.forEach((row) => {
+				let obj = {
+					id: row.id,
+					timestamp: row.timestamp
+				};
+
+				blockchain_db.all(`SELECT * FROM transactions WHERE block_id = ?`, row.id, (err, rows) => {
+					if (err) {
+						console.log(err);
+						return false;
+					}
+					obj.transactions = rows;
+					blockchain.push(obj);
+				});
+			});
+
+			res.render('blockchain', {
+				title: 'Blockchain',
+				unverified_transactions: unverified_transactions,
+				blockchain: blockchain
+			});
+		});		
 	});
 };
