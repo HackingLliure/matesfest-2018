@@ -23,8 +23,31 @@ block content
             h1 Blockchain
             p The blockchain is the record of <i>every</i> transaction that's ever been made using this coin.
 
-    .row
-      for block in blockchain
+    if unverified_transactions
+      .row
+        .col-sm-2
+        .col-sm-8
+          .panel
+            .panel-body
+              h3 Unverified transactions
+              table(width='100%')
+                tr
+                  th From
+                  th To
+                  th Amount
+                  th Signature
+                for transaction in unverified_transactions
+                  tr
+                    td 
+                      a(href='/account/#{transaction.from}') #{transaction.from}
+                    td 
+                      a(href='/account/#{transaction.to}') #{transaction.to}
+                    td #{transaction.amount} GAL
+                    td 
+                      a(href='https://www.youtube.com/watch?v=dQw4w9WgXcQ') 688c05460636e9613e497b9e1d7c4553
+
+    for block in blockchain
+      .row
         .col-sm-2
         .col-sm-8
           .panel
@@ -42,7 +65,7 @@ block content
                   tr
                     td #{transaction.from}
                     td #{transaction.to}
-                    td #{transaction.amount}$
+                    td #{transaction.amount} GAL
                     td #{transaction.signature}
 
 
