@@ -15,21 +15,31 @@ block content
         for info in messages.info
           div= info.msg
 
-  .row    
-    .col-sm-4  
+  .row
+    .col-sm-2    
+    .col-sm-8  
       .panel
         .panel-body
           h1 Account
+          p Here you can see the total balance for the id #{id} and all the transactions made by it.
   .row
+    .col-sm-2
     .col-sm-4
       .panel
         .panel-body
           h2 Balance
-          h3 #{balance} SHT
+          p Total: <b>#{balance} GAL</b>
     .col-sm-4
       .panel
         .panel-body
           h2 Transactions
-          ul
-            each t in transactions
-              h4 #{t.amount} SHT from #{t.from} to #{t.to}  
+          table(width='100%')
+            tr
+              th From
+              th To
+              th Amount
+            for transaction in transactions
+              tr
+                td #{transaction.from}
+                td #{transaction.to}
+                td #{transaction.amount} GAL
