@@ -1,21 +1,3 @@
-/**
- * GET /
- */
-
-/*
-  const crypto = require('crypto');
-  const sign = crypto.createSign('SHA256');
-  const verify = crypto.createVerify('SHA256');
-
-  sign.write('test');
-  sign.end();
-  verify.write('test');
-  verify.end();
-
-  signature = sign.sign(privateKey);
-  console.log(verify.verify(publicKey, signature));  
-*/
-
 const NodeRSA = require('node-rsa');
 const sqlite3 = require('sqlite3');
 const db = require('./../database.js');
@@ -51,21 +33,26 @@ function get_zero(callback) {
     private_db.get(`SELECT * FROM accounts WHERE id = ?`, [zero_user], callback);
 } 
 
+function get_user(user, callback) {
+    private_db.get(`SELECT * FROM accounts WHERE id = ?`, [user], callback);
+} 
+
 exports.index = function(req, res) {
     // Get session cookies
     cookies = req.cookies;
     
-    let key = new NodeRSA();
-
+    const key = new NodeRSA();
     key.generateKeyPair(512);
-    id = generate_id();   // Hash the public key and generate a pseudo-unique id
-    secret = generate_id();
+    const id = generate_id();
+    const secret = generate_id();
+
+    const user_array = [ id, secret, key.exportKey('public'), key.exportKey('private') ];
 
     // Give birth to Jesus
     get_zero(
 	function (err, row) {
             if (err) {
-		console.log(err);
+		        console.log(err);
             } else if (row == undefined){
 		let keyZero = new NodeRSA();
 		keyZero.generateKeyPair(512);
@@ -73,6 +60,17 @@ exports.index = function(req, res) {
 			       ["00000000", generate_id(), keyZero.exportKey('public'), keyZero.exportKey('private')]
 			      );
             }
+	});
+
+    // Create user
+    get_user(id, (err, row) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        if (row == undefined){
+            private_db.run(`INSERT INTO accounts(id, secret, public, private) VALUES (?,?,?,?)`, user_array);
+        }
 	});
 
     // Jesus is alive!
