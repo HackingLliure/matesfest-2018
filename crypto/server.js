@@ -7,7 +7,7 @@ var methodOverride = require('method-override');
 var session = require('express-session');
 var flash = require('express-flash');
 var bodyParser = require('body-parser');
-var expressValidator = require('express-validator');
+//var expressValidator = require('express-validator');
 var dotenv = require('dotenv');
 
 // Load environment variables from .env file
@@ -30,7 +30,7 @@ app.use(compression());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(expressValidator());
+//app.use(expressValidator());
 app.use(methodOverride('_method'));
 app.use(session({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: true }));
 app.use(flash());
