@@ -2,7 +2,7 @@ const NodeRSA = require('node-rsa');
 const sqlite3 = require('sqlite3');
 const { body, cookie, validationResult } = require('express-validator/check');
 const { matchedData, sanitizeBody, sanitizeCookie } = require('express-validator/filter');
-const transaction_querry = `INSERT INTO transactions ('timestamp', 'from', 'to', 'amount', 'signature', 'block_id') VALUES(?,?,?,?,?,?)`;
+const transaction_querry = "INSERT INTO transactions ('timestamp', 'from', 'to', 'amount', signature', 'block_id') VALUES(?,?,?,?,?,?)";
 
 let key = new NodeRSA();
 let blockchain_db = new sqlite3.Database('blockchain.sqlite3', (err) => {

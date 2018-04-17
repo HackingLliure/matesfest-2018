@@ -7,7 +7,7 @@ var methodOverride = require('method-override');
 var session = require('express-session');
 var flash = require('express-flash');
 var bodyParser = require('body-parser');
-//var expressValidator = require('express-validator');
+const { cookie, validationResult } = require('express-validator/check');
 var dotenv = require('dotenv');
 
 // Load environment variables from .env file
@@ -20,6 +20,7 @@ var AccountController = require('./controllers/account');
 var TransactionController = require('./controllers/transaction');
 var AboutController = require('./controllers/about');
 var MiningController = require('./controllers/mining');
+var CreateController = require('./controllers/create')
 
 var app = express();
 
@@ -30,15 +31,29 @@ app.use(compression());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-//app.use(expressValidator());
 app.use(methodOverride('_method'));
 app.use(session({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: true }));
 app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 
+app.use([
+    cookie('id').exists(),
+    cookie('secret').exists(),
+    cookie('private-key').exists(),
+    cookie('public-key').exists()
+], function(req, res, next) {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+	CreateController.index(req, res);
+	return;
+    }
+    next();
+})
+
 app.get('/', HomeController.index);
-app.get('/blockchain', BlockchainController.index);
+app.get('/blockchain',BlockchainController.index);
 app.get('/account', AccountController.index);
 app.get('/account/:id', AccountController.index);
 app.get('/transaction', TransactionController.transactionGet);
