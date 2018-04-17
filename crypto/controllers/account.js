@@ -2,15 +2,6 @@ const sqlite3 = require('sqlite3');
 const db = require('./../database.js');
 
 let blockchain_db = db.get_blockchain_db();
-/*
-  let blockchain_db = new sqlite3.Database('blockchain.sqlite3', (err) => {
-  if (err) {
-  console.error(err.message);
-  } else {
-  console.log('Connected to the blockchain database.');
-  }
-  });
-*/
 
 function get_balance(callback) {
     blockchain_db.all(`SELECT * FROM transactions;`, callback);
