@@ -47,17 +47,29 @@ exports.index = function(req, res) {
   if(!cookies["id"]) {
     let key = new NodeRSA();
 
-    key.generateKeyPair(128, 2111);
+    key.generateKeyPair(512);
     id = generate_id();   // Hash the public key and generate a pseudo-unique id
     secret = generate_id();
 
     // Store account into database
     // TODO: create and store the secret
-    private_db.run(`INSERT INTO accounts (id, secret, public, private) VALUES(?,?,?,?)`, 
-    	[id, secret, key.exportKey('public'), key.exportKey('private')]
-    );
+
+    private_db.get(`SELECT * FROM accounts WHERE id = ?`, "00000000", function (err, row) {
+      if (err) {
+        console.log(err);
+      } else if (row == undefined){
+        let keyZero = new NodeRSA();
+        keyZero.generateKeyPair(512);
+        private_db.run(`INSERT INTO accounts ('id', 'secret', 'public', 'private') VALUES(?,?,?,?)`, 
+          ["00000000", generate_id(), keyZero.exportKey('public'), keyZero.exportKey('private')]
+        ); 
+      }
+    });
+
+    console.log(key.sign("lel", "base64"));
+      
     blockchain_db.run(`INSERT INTO transactions ('timestamp', 'from', 'to', 'amount', 'signature') VALUES(?,?,?,?,?)`,
-    	[Math.floor(new Date() / 1000), "000000", id, 1, '']
+    	[Math.floor(new Date() / 1000), "00000000", id, 1, '']
     ); // WIPWIPWIPWIPWIP
 
     // Store the user cookies
