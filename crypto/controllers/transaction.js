@@ -2,7 +2,7 @@ const NodeRSA = require('node-rsa');
 const sqlite3 = require('sqlite3');
 const { body, cookie, validationResult } = require('express-validator/check');
 const { matchedData, sanitizeBody, sanitizeCookie } = require('express-validator/filter');
-const transaction_querry = `INSERT INTO transactions ('timestamp', 'from', 'to', 'amount', 'signature') VALUES(?,?,?,?,?)`;
+const transaction_querry = `INSERT INTO transactions ('timestamp', 'from', 'to', 'amount', 'signature', 'block_id') VALUES(?,?,?,?,?,?)`;
 
 let key = new NodeRSA();
 let blockchain_db = new sqlite3.Database('blockchain.sqlite3', (err) => {
@@ -69,12 +69,13 @@ exports.transactionPost = [
 	const from_id = cookiesData.id;
 	const to_id = bodyData.to_id;
 	const amount = bodyData.amount;
+	const block_id = "null";
 	
 	let buffer = from_id + to_id + amount + String(timestamp);
 	let key = new NodeRSA(cookies["private-key"]);
 	const signature = key.sign(buffer, "base64");
 	
-	blockchain_db.run(transaction_querry, [timestamp, from_id, to_id, amount, signature]);
+	blockchain_db.run(transaction_querry, [timestamp, from_id, to_id, amount, signature, block_id]);
 	
 	req.flash('success', { msg: 'Your transaction have been submitted!'});
 	res.redirect('/transaction');
