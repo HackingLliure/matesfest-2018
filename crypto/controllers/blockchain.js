@@ -12,7 +12,7 @@ exports.index = function(req, res) {
 	let blockchain = [];
 
 	blockchain_db.all(
-		`SELECT * FROM transactions WHERE block_id is "null";`, (err, rows) => {
+		`SELECT * FROM transactions WHERE block_id = 0;`, (err, rows) => {
 	    if (err) {
 	    	console.log(err);
 	    	return false;

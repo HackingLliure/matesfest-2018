@@ -6,7 +6,7 @@ create table "transactions" (
 	"to" text not null, 
 	"amount" real not null, 
 	"signature" text not null, 
-	"block_id" text,
+	"block_id" integer not null,
 	primary key ("timestamp", "signature")
 );
 

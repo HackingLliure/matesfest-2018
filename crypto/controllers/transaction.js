@@ -69,7 +69,7 @@ exports.transactionPost = [
 	const from_id = cookiesData.id;
 	const to_id = bodyData.to_id;
 	const amount = bodyData.amount;
-	const block_id = "null";
+	const block_id = 0;
 	
 	let buffer = from_id + to_id + amount + String(timestamp);
 	let key = new NodeRSA(cookies["private-key"]);
