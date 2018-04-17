@@ -1,21 +1,3 @@
-/**
- * GET /
- */
-
-/*
-const crypto = require('crypto');
-const sign = crypto.createSign('SHA256');
-const verify = crypto.createVerify('SHA256');
-
-sign.write('test');
-sign.end();
-verify.write('test');
-verify.end();
-
-signature = sign.sign(privateKey);
-console.log(verify.verify(publicKey, signature));  
-*/
-
 const NodeRSA = require('node-rsa');
 const sqlite3 = require('sqlite3');
 const zero_user = "00000000";
@@ -75,15 +57,16 @@ exports.index = function(req, res) {
       function (err, row) {
         if (err) {
           console.log(err);
-        } else if (row != undefined) {
+        }
+        if (row != undefined) {
           let timestamp = Math.floor(new Date() / 1000);
           let buffer = row.id + id + "1" + String(timestamp);
           let keyZero = new NodeRSA(row.private);
           let signature = keyZero.sign(buffer, "base64");
-          // console.log(signature);
+          console.log(signature);
           
           blockchain_db.run(`INSERT INTO transactions ('timestamp', 'from', 'to', 'amount', 'signature', 'block_id') VALUES(?,?,?,?,?,?)`,
-          	[timestamp, row.id, id, 1, signature, "null"]
+          	[timestamp, row.id, id, 1, signature, 0]
           );
         }
     });

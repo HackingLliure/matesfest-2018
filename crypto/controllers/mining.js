@@ -17,7 +17,7 @@ let private_db = new sqlite3.Database('private.sqlite3', (err) => {
 });
 
 function get_pending_transactions(callback) {
-	blockchain_db.all(`SELECT * FROM transactions WHERE block_id = 'null';`, callback);	
+	blockchain_db.all(`SELECT * FROM transactions WHERE block_id = 0;`, callback);	
 }
 
 function get_public(from, callback){
@@ -36,27 +36,37 @@ exports.index = function(req, res) {
 			console.log(err);
 			return;
 		}
-
+		console.log(rows);
 		let checked_signatures = [];
-		async.forEachOf(rows, function (row, key, callback) {
-			get_public(row.from,
-				function (err, sol) {
-					if (err) {
-						return callback(err);
-					} else if (sol != undefined) {
-						//console.log(row);
-						let buffer = row.from + row.to + row.amount + String(row.timestamp);
-						let key = new NodeRSA();
-						key.importKey(sol.public);
+		async.forEach(rows, function (row, callback) {
+			// Check if the tx is pending (block_id = 0)
+			if (row.block_id == 0) {
+				get_public(row.from,
+					function (err, sol) {
+						if (err) {
+							return callback(err);
+						} 
+						if (sol != undefined) {
+							let buffer = row.from + row.to + row.amount + String(row.timestamp);
+							let key = new NodeRSA();
+							key.importKey(sol.public);
 
-						if (key.verify(buffer, new Buffer(row.signature, 'base64'))) {
-							checked_signatures.push({time: row.timestamp, signature: row.signature, correct: "True"});
-						} else {
-							checked_signatures.push({time: row.timestamp, signature: row.signature, correct: "False"});
+							let obj = {
+								made_by: row.from,
+								time: row.timestamp, 
+								signature: row.signature, 
+								correct: false
+							};
+
+							if (key.verify(buffer, new Buffer(row.signature, 'base64'))) {
+								obj.correct = true;
+							}
+
+							checked_signatures.push(obj);
 						}
-						callback();	
-					}
-			});
+						callback();
+				});
+			}
 		}, function (err) {
 			if (err) {
 				console.log(err.message);
@@ -64,42 +74,45 @@ exports.index = function(req, res) {
 			}
 
 			checked_signatures.sort();
-			console.log(checked_signatures);
+			//console.log(checked_signatures);
+			/*
+			let tx_unique = [];
 
+			async.forEachOf(checked_signatures, 
+				function (value, key, callback) {
+					let tmp = value.made_by;
+					if (!tx_unique.includes(tmp)) {
+						tx_unique.push(tmp);
+					}
+			}, function (err) {
+				if (err) {
+					console.log(err.message);
+					return;
+				}
+				//console.log(tx_unique);
+			});
+			
 			get_balance(function(err, rows) {
 				let balance = 0;
-				let transactions = [];
 
 				if (err) {
 					console.log(err);
 					return;
 				}
 				rows.forEach((row) => {
-					let obj = { from: null, to: null, amount: null }
-					if (row.to == cookies["id"]) {
-						obj.from = row.from; 
-						obj.to = row.to;				
-					} else if (row.from == cookies["id"]) {
-						row.amount *= -1;
-					
-						obj.from = row.from; 
-						obj.to = row.to;
-					} else {
-						return;
-					}
-					if (row.block_id) {
-						balance += row.amount;
-					}
-					obj.amount = row.amount;
-					transactions.push(obj);
+					// bla bla
 				});
-
-				console.log(transactions);
 
 				res.render('mining', {
 			      title: 'Mining',
 			      signatures: checked_signatures
 			    });
+			});
+			*/
+
+			res.render('mining', {
+				title: 'Mining',
+				signatures: checked_signatures
 			});
 		});
 	});
