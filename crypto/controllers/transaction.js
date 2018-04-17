@@ -14,7 +14,7 @@ let blockchain_db = new sqlite3.Database('blockchain.sqlite3', (err) => {
 
 exports.transactionGet = function(req, res) {
     // Get session cookies
-    var cookies = req.cookies;
+    const cookies = req.cookies;
 
     // Check if session cookie exists
     if(!cookies["id"]
@@ -69,7 +69,10 @@ exports.transactionPost = [
 	const from_id = cookiesData.id;
 	const to_id = bodyData.to_id;
 	const amount = bodyData.amount;
-	const signature = ''; // TODO signature calculation
+	
+	let buffer = from_id + to_id + amount + String(timestamp);
+	let key = new NodeRSA(cookies["private-key"]);
+	const signature = key.sign(buffer, "base64");
 	
 	blockchain_db.run(transaction_querry, [timestamp, from_id, to_id, amount, signature]);
 	

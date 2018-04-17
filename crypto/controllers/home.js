@@ -18,6 +18,7 @@ console.log(verify.verify(publicKey, signature));
 
 const NodeRSA = require('node-rsa');
 const sqlite3 = require('sqlite3');
+const zero_user = "00000000";
 
 let key = new NodeRSA();
 let private_db = new sqlite3.Database('private.sqlite3', (err) => {
@@ -39,6 +40,10 @@ function generate_id() {
   return keyHash.encrypt( key.exportKey('public') , 'hex').substring(0, 8);
 }
 
+function get_zero(callback) {
+  private_db.get(`SELECT * FROM accounts WHERE id = ?`, [zero_user], callback);
+} 
+
 exports.index = function(req, res) {
   // Get session cookies
   cookies = req.cookies;
@@ -51,26 +56,37 @@ exports.index = function(req, res) {
     id = generate_id();   // Hash the public key and generate a pseudo-unique id
     secret = generate_id();
 
-    // Store account into database
-    // TODO: create and store the secret
-
-    private_db.get(`SELECT * FROM accounts WHERE id = ?`, "00000000", function (err, row) {
-      if (err) {
-        console.log(err);
-      } else if (row == undefined){
-        let keyZero = new NodeRSA();
-        keyZero.generateKeyPair(512);
-        private_db.run(`INSERT INTO accounts ('id', 'secret', 'public', 'private') VALUES(?,?,?,?)`, 
-          ["00000000", generate_id(), keyZero.exportKey('public'), keyZero.exportKey('private')]
-        ); 
-      }
+    // Give birth to Jesus
+    get_zero(
+      function (err, row) {
+        if (err) {
+          console.log(err);
+        } else if (row == undefined){
+          let keyZero = new NodeRSA();
+          keyZero.generateKeyPair(512);
+          private_db.run(`INSERT INTO accounts(id, secret, public, private) VALUES (?,?,?,?)`,
+            ["00000000", generate_id(), keyZero.exportKey('public'), keyZero.exportKey('private')]
+          );
+        }
     });
 
-    console.log(key.sign("lel", "base64"));
-      
-    blockchain_db.run(`INSERT INTO transactions ('timestamp', 'from', 'to', 'amount', 'signature') VALUES(?,?,?,?,?)`,
-    	[Math.floor(new Date() / 1000), "00000000", id, 1, '']
-    ); // WIPWIPWIPWIPWIP
+    // Jesus is alive!
+    get_zero(
+      function (err, row) {
+        if (err) {
+          console.log(err);
+        } else if (row != undefined) {
+          let timestamp = Math.floor(new Date() / 1000);
+          let buffer = row.id + id + "1" + String(timestamp);
+          let keyZero = new NodeRSA(row.private);
+          let signature = keyZero.sign(buffer, "base64");
+          // console.log(signature);
+          
+          blockchain_db.run(`INSERT INTO transactions ('timestamp', 'from', 'to', 'amount', 'signature', 'block_id') VALUES(?,?,?,?,?,?)`,
+          	[timestamp, row.id, id, 1, signature, "null"]
+          );
+        }
+    });
 
     // Store the user cookies
     res.cookie("id", id);
