@@ -32,12 +32,14 @@ block content
               h3 Unverified transactions
               table(width='100%')
                 tr
+                  th Timestamp
                   th From
                   th To
                   th Amount
                   th Signature
                 for transaction in unverified_transactions
                   tr
+                    td #{transaction.timestamp}
                     td 
                       a(href='/account/#{transaction.from}') #{transaction.from}
                     td 
@@ -57,12 +59,14 @@ block content
               h4 Transactions in this block
               table(width='100%')
                 tr
+                  th Timestamp
                   th From
                   th To
                   th Amount
                   th Signature
                 for transaction in block.transactions
                   tr
+                    td #{transaction.timestamp}
                     td #{transaction.from}
                     td #{transaction.to}
                     td #{transaction.amount} GAL

@@ -24,21 +24,21 @@ exports.index = function(req, res) {
 			rows.forEach((row) => {
 				let obj = { from: null, to: null, amount: null }
 				if (row.to == id) {
-					balance += row.amount;
-
 					obj.from = row.from; 
-					obj.to = row.to;
-					obj.amount = row.amount;
-					transactions.push(obj);
-				
+					obj.to = row.to;				
 				} else if (row.from == id) {
-					balance -= row.amount;
+					row.amount *= -1;
 				
 					obj.from = row.from; 
 					obj.to = row.to;
-					obj.amount = row.amount;
-					transactions.push(obj);
+				} else {
+					return;
 				}
+				if (row.block_id) {
+					balance += row.amount;
+				}
+				obj.amount = row.amount;
+				transactions.push(obj);
 			});
 			res.render('account', {
 				title: 'Account',

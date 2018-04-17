@@ -34,12 +34,12 @@ block content
         .panel-body
           h2 Transactions
           table(width='100%')
-            tr
+            tr 
               th From
               th To
               th Amount
             for transaction in transactions
-              tr
+              tr(class="#{transaction.block_id ? '' : 'bg-danger'}", title="#{transaction.block_id ? '' : 'Unverified transaction'}")
                 td #{transaction.from}
                 td #{transaction.to}
                 td #{transaction.amount} GAL
