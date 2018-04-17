@@ -27,11 +27,14 @@ block content
         .panel
           .panel-body
             h2 Pool
-            table(width='50%')
+            table(width='100%')
                 tr
+                  th Timestamp
                   th Signature
                   th Checked
                 for signature in signatures
                   tr
+                    td #{signature.time}
                     td #{signature.signature.substr(0,10)} . . . #{signature.signature.substr(-10)}
-                    td #{signature.correct}
+                    td 
+                      a(href='https://i.chzbgr.com/full/9104618752/h70889BA8/') #{signature.correct}

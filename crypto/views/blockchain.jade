@@ -37,6 +37,7 @@ block content
                   th To
                   th Amount
                   th Signature
+                  th Block id
                 for transaction in unverified_transactions
                   tr
                     td #{transaction.timestamp}
@@ -46,7 +47,8 @@ block content
                       a(href='/account/#{transaction.to}') #{transaction.to}
                     td #{transaction.amount.toFixed(3)} GAL
                     td 
-                      a(href='https://www.youtube.com/watch?v=dQw4w9WgXcQ') #{transaction.signature.substr(0,5)} . . . #{transaction.signature.substr(-6)} 
+                      a(href='https://www.youtube.com/watch?v=dQw4w9WgXcQ') #{transaction.signature.substr(0,5)} . . . #{transaction.signature.substr(-6)}
+                    td #{transaction.block_id}
 
     for block in blockchain
       .row
