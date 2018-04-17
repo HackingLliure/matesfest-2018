@@ -6,19 +6,15 @@ let blockchain_db = new sqlite3.Database('blockchain.sqlite3', (err) => {
   if (err) {
 	console.error(err.message);
   }
-  console.log('Connected to the blockchain database.');
+  console.log('/MINING\tConnected to the blockchain database.');
 });
 
 let private_db = new sqlite3.Database('private.sqlite3', (err) => {
   if (err) {
 	console.error(err.message);
   }
-  console.log('Connected to the blockchain database.');
+  console.log('/MINING\tonnected to the blockchain database.');
 });
-
-function get_pending_transactions(callback) {
-	blockchain_db.all(`SELECT * FROM transactions WHERE block_id = 0;`, callback);	
-}
 
 function get_public(from, callback){
 	private_db.get(`SELECT id,public,private FROM accounts WHERE id = ?;`, [from], callback);
@@ -30,15 +26,43 @@ function get_balance(callback) {
 
 exports.index = function(req, res) {
 	let cookies = req.cookies;
+	let sign = [];
 
-	get_pending_transactions(function (err, rows) {
-		if (err) {
-			console.log(err);
-			return;
-		}
-		console.log(rows);
-		let checked_signatures = [];
-		async.forEach(rows, function (row, callback) {
+	blockchain_db.all(
+		`SELECT * FROM transactions WHERE block_id = 0;`, (err, rows) => {
+	    if (err) {
+	    	console.log(err.message);
+	    	return;
+	    }
+		async.forEach(rows, (value, callback) => {
+			private_db.get(
+				`SELECT id, public FROM accounts WHERE id is ?;`, [value.from], (err, sol) => {
+					if (err) {
+						return callback(err);
+					}
+					console.log(value.from, sol);
+					callback();
+					
+				});
+		}, function (err) {
+			if (err) {
+				console.log(err.message);
+				return;
+			}
+			console.log(sign);
+		});
+
+		
+		
+		res.render('mining', {
+			title: 'Mining',
+			signatures: sign
+		});	
+	});
+};
+
+		/*
+		async.eachSeries(rows, function (row, callback) {
 			// Check if the tx is pending (block_id = 0)
 			if (row.block_id == 0) {
 				get_public(row.from,
@@ -108,7 +132,7 @@ exports.index = function(req, res) {
 			      signatures: checked_signatures
 			    });
 			});
-			*/
+			
 
 			res.render('mining', {
 				title: 'Mining',
@@ -117,3 +141,5 @@ exports.index = function(req, res) {
 		});
 	});
 }
+
+*/

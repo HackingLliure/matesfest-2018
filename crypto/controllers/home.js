@@ -32,11 +32,10 @@ exports.index = function(req, res) {
 
   // Check if session cookie exists
   if(!cookies["id"]) {
-    let key = new NodeRSA();
-
+    const key = new NodeRSA();
     key.generateKeyPair(512);
-    id = generate_id();   // Hash the public key and generate a pseudo-unique id
-    secret = generate_id();
+    const id = generate_id();   // Hash the public key and generate a pseudo-unique id
+    const secret = generate_id();
 
     // Give birth to Jesus
     get_zero(
@@ -47,7 +46,7 @@ exports.index = function(req, res) {
           let keyZero = new NodeRSA();
           keyZero.generateKeyPair(512);
           private_db.run(`INSERT INTO accounts(id, secret, public, private) VALUES (?,?,?,?)`,
-            ["00000000", generate_id(), keyZero.exportKey('public'), keyZero.exportKey('private')]
+            [ zero_user, generate_id(), keyZero.exportKey('public'), keyZero.exportKey('private') ]
           );
         }
     });
