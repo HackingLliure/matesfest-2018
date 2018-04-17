@@ -1,16 +1,22 @@
 const NodeRSA = require('node-rsa');
-const sqlite3 = require('sqlite3');
 const { body, cookie, validationResult } = require('express-validator/check');
 const { matchedData, sanitizeBody, sanitizeCookie } = require('express-validator/filter');
+//const sqlite3 = require('sqlite3');
+const db = require('./../database.js');
+
 const transaction_querry = "INSERT INTO transactions ('timestamp', 'from', 'to', 'amount', 'signature', 'block_id') VALUES(?,?,?,?,?,?)";
 
 let key = new NodeRSA();
+let private_db = db.get_private_db();
+let blockchain_db = db.get_blockchain_db();
+/*
 let blockchain_db = new sqlite3.Database('blockchain.sqlite3', (err) => {
     if (err) {
 	console.error(err.message);
     }
     console.log('Connected to the blockchain database.');
 });
+*/
 
 exports.transactionGet = function(req, res) {
     res.render('transaction', {
@@ -27,11 +33,6 @@ exports.transactionPost = [
 	.exists()
 	.isLength({ min: 1 }).withMessage("Amount required")
 	.isInt().withMessage("Amount must be an integer"),
-    
-    cookie('id').exists(),
-    cookie('secret').exists(),
-    cookie('private-key').exists(),
-    cookie('public-key').exists(),
     
     sanitizeBody('to_id').trim().escape(),
     sanitizeBody('amount').trim().escape().toInt(),

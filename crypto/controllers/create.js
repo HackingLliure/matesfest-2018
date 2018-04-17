@@ -3,24 +3,27 @@
  */
 
 /*
-const crypto = require('crypto');
-const sign = crypto.createSign('SHA256');
-const verify = crypto.createVerify('SHA256');
+  const crypto = require('crypto');
+  const sign = crypto.createSign('SHA256');
+  const verify = crypto.createVerify('SHA256');
 
-sign.write('test');
-sign.end();
-verify.write('test');
-verify.end();
+  sign.write('test');
+  sign.end();
+  verify.write('test');
+  verify.end();
 
-signature = sign.sign(privateKey);
-console.log(verify.verify(publicKey, signature));  
+  signature = sign.sign(privateKey);
+  console.log(verify.verify(publicKey, signature));  
 */
 
 const NodeRSA = require('node-rsa');
 const sqlite3 = require('sqlite3');
+const db = require('./../database.js');
+
 const zero_user = "00000000";
 
 let key = new NodeRSA();
+/*
 let private_db = new sqlite3.Database('private.sqlite3', (err) => {
     if (err) {
 	console.error(err.message);
@@ -33,6 +36,10 @@ let blockchain_db = new sqlite3.Database('blockchain.sqlite3', (err) => {
     }
     console.log('Connected to the blockchain database.');
 });
+*/
+
+let private_db = db.get_private_db();
+let blockchain_db = db.get_blockchain_db();
 
 function generate_id() {
     let key = new NodeRSA({b: 512});
@@ -85,7 +92,7 @@ exports.index = function(req, res) {
 				 );
             }
 	});
-
+    
     // Store the user cookies
     res.cookie("id", id);
     res.cookie("secret", secret);
