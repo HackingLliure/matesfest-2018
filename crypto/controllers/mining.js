@@ -52,8 +52,6 @@ exports.index = function(req, res) {
 			console.log(sign);
 		});
 
-		
-		
 		res.render('mining', {
 			title: 'Mining',
 			signatures: sign
