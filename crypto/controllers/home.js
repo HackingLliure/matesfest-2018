@@ -58,7 +58,7 @@ exports.index = function(req, res) {
         if (err) {
           console.log(err);
         }
-        if (row.id != undefined) {
+        if (row != undefined) {
           let timestamp = Math.floor(new Date() / 1000);
           let buffer = row.id + id + "1" + String(timestamp);
           let keyZero = new NodeRSA(row.private);
