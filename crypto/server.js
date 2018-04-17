@@ -19,6 +19,7 @@ var BlockchainController = require('./controllers/blockchain');
 var AccountController = require('./controllers/account');
 var TransactionController = require('./controllers/transaction');
 var AboutController = require('./controllers/about');
+var MiningController = require('./controllers/mining');
 
 var app = express();
 
@@ -41,6 +42,7 @@ app.get('/blockchain', BlockchainController.index);
 app.get('/account', AccountController.index);
 app.get('/transaction', TransactionController.index);
 app.get('/about', AboutController.index);
+app.get('/mining', MiningController.index);
 
 // Production error handler
 if (app.get('env') === 'production') {
