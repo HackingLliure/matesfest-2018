@@ -29,9 +29,19 @@ exports.transactionGet = function(req, res) {
 };
 
 exports.transactionPost = function(req, res) {
-    req.assert('to_id', 'Id cannot be blank').notEmpty();
-    //req.assert('email', 'Email is not valid').notEmpty();
+    // Get session cookies
+    cookies = req.cookies;
 
+    // Check if session cookie exists
+    if(!cookies["id"]
+       || !cookies["secret"]
+       || !cookies["private-key"]
+       || !cookies["public-key"]) {
+	return res.redirect("/");
+    }
+    
+    req.assert('to_id', 'To id').notEmpty();
+    req.assert('amount', 'Amount cannot be blank').notEmpty();
     
     var errors = req.validationErrors();
     
@@ -44,12 +54,10 @@ exports.transactionPost = function(req, res) {
     from_id = cookies["id"];
     to_id = req.body.to_id;
     amount = req.body.amount;
-    signature = '';
+    signature = ''; // TODO signature calculation
     
     blockchain_db.run(transaction_querry, [timestamp, from_id, to_id, amount, signature]);
     
-    // If cookie exists render control panel
-    res.render('transaction', {
-	title: 'Transaction'
-    });
+    req.flash('success', { msg: 'Your transaction have been submitted!'});
+    res.redirect('/transaction');
 };
