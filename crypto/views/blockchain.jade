@@ -44,9 +44,9 @@ block content
                       a(href='/account/#{transaction.from}') #{transaction.from}
                     td 
                       a(href='/account/#{transaction.to}') #{transaction.to}
-                    td #{transaction.amount} GAL
+                    td #{transaction.amount.toFixed(3)} GAL
                     td 
-                      a(href='https://www.youtube.com/watch?v=dQw4w9WgXcQ') 688c05460636e9613e497b9e1d7c4553
+                      a(href='https://www.youtube.com/watch?v=dQw4w9WgXcQ') #{transaction.signature.substr(0,5)} . . . #{transaction.signature.substr(-6)} 
 
     for block in blockchain
       .row
