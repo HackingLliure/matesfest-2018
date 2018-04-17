@@ -18,7 +18,7 @@ var HomeController = require('./controllers/home');
 var BlockchainController = require('./controllers/blockchain');
 var AccountController = require('./controllers/account');
 var TransactionController = require('./controllers/transaction');
-var contactController = require('./controllers/contact');
+var AboutController = require('./controllers/about');
 
 var app = express();
 
@@ -40,8 +40,7 @@ app.get('/', HomeController.index);
 app.get('/blockchain', BlockchainController.index);
 app.get('/account', AccountController.index);
 app.get('/transaction', TransactionController.index);
-app.get('/contact', contactController.contactGet);
-app.post('/contact', contactController.contactPost);
+app.get('/about', AboutController.index);
 
 // Production error handler
 if (app.get('env') === 'production') {
