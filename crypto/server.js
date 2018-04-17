@@ -39,6 +39,7 @@ app.use(cookieParser());
 app.get('/', HomeController.index);
 app.get('/blockchain', BlockchainController.index);
 app.get('/account', AccountController.index);
+app.get('/account/:id', AccountController.index);
 app.get('/transaction', TransactionController.index);
 app.get('/about', AboutController.index);
 

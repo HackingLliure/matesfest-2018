@@ -8,12 +8,11 @@ let blockchain_db = new sqlite3.Database('blockchain.sqlite3', (err) => {
 });
 
 function get_balance(callback) {
-	blockchain_db.all(`SELECT * FROM transactions`, callback);
+	blockchain_db.all(`SELECT * FROM transactions;`, callback);
 }
 
 exports.index = function(req, res) {
-	let id = req.cookies["id"];
-	
+	let id = req.params.id ? req.params.id : req.cookies["id"];
 
 	get_balance(function(err, rows) {
 		let balance = 0;
@@ -42,13 +41,11 @@ exports.index = function(req, res) {
 				}
 			});
 			res.render('account', {
-			    	title: 'Account',
-			    	id: id,
-			    	balance: balance,
-			    	transactions: transactions
+				title: 'Account',
+				id: id,
+				balance: balance,
+				transactions: transactions
 			});
 		}
-	});
-
-	
+	});	
 };
