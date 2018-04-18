@@ -16,5 +16,5 @@ create table "blocks" (
 	"hash" text not null,
 	"proof" text not null, 
 	"parent_block" text,
-	primary key ("id")
+	primary key ("hash")
 );
