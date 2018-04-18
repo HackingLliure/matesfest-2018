@@ -100,6 +100,7 @@ exports.mine = function (req, res) {
 		if (parseInt(key) > 0) {
 			const signature = value;
 			let actual_id = 0;
+			let created = false;
 
 			blockchain_db.get(`SELECT MAX(id) FROM blocks;`, (err, sol) => {
 				if (err) {
@@ -117,10 +118,20 @@ exports.mine = function (req, res) {
 				const key = new NodeRSA(cookies["private-key"]);
 				const hash = key.sign(buffer, "base64");
 				const proof = 'trivial';
-
-				blockchain_db.run(`INSERT INTO blocks ('id', 'timestamp', 'hash', 'proof', 'parent_block') VALUES(?,?,?,?,?);`,
-					[ actual_id + 1, timestamp, hash, proof, actual_id ]
-				);
+				
+				if (!created) {
+					blockchain_db.run(`INSERT INTO blocks ('id', 'timestamp', 'hash', 'proof', 'parent_block') VALUES(?,?,?,?,?);`,
+						[ actual_id + 1, timestamp, hash, proof, actual_id ], (err, asdf) => {
+							if (err) {
+								console.log(err);
+								return;
+							}
+							created = true;
+						}
+					);
+				} else {
+					actual_id -= 1;
+				}
 
 				blockchain_db.run(`UPDATE transactions SET block_id = ? WHERE signature = ?;`,
 					[ actual_id + 1, signature ], 

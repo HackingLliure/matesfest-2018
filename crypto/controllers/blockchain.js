@@ -66,8 +66,8 @@ exports.index = function(req, res) {
 								title: 'Blockchain',
 								unverified_transactions: unverified_transactions,
 								blockchain: blocks.sort((a, b) => {
-									if (a.id > b.id) return -1;
-									else if (a.id == b.id) return 0;
+									if (parseInt(a.id) > parseInt(b.id)) return -1;
+									else if (parseInt(a.id) == parseInt(b.id)) return 0;
 									else return 1;
 								})
 							});
