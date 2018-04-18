@@ -99,7 +99,7 @@ exports.mine = function (req, res) {
 	for (const [key, value] of Object.entries(cookies)) {
 		if (parseInt(key) > 0) {
 			const signature = value;
-			let actual_id = 1;
+			let actual_id = 0;
 
 			blockchain_db.get(`SELECT MAX(id) FROM blocks;`, (err, sol) => {
 				if (err) {
@@ -122,7 +122,7 @@ exports.mine = function (req, res) {
 				);
 
 				blockchain_db.run(`UPDATE transactions SET block_id = ? WHERE signature = ?;`,
-					[ actual_id, signature ], 
+					[ actual_id + 1, signature ], 
 					(err, sol) => {
 						if (err) {
 							console.log(err);
