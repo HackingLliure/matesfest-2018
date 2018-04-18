@@ -72,6 +72,6 @@ block content
                     td #{transaction.from}
                     td #{transaction.to}
                     td #{transaction.amount} GAL
-                    td #{transaction.signature}
+                    td #{transaction.signature.substr(0,5)} . . . #{transaction.signature.substr(-5)}
 
 
