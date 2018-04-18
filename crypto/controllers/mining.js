@@ -109,6 +109,7 @@ exports.mine = function (req, res) {
 				
 				if (sol && sol["MAX(id)"]) {
 					actual_id = parseInt(sol["MAX(id)"]);
+					console.log(actual_id);
 				}
 
 				const timestamp = Math.floor(new Date() / 1000);
