@@ -17,13 +17,13 @@ exports.index = function(req, res) {
     let blockchain = [];
 
     blockchain_db.all(
-	`SELECT * FROM transactions WHERE block_id = 0;`, (err, rows) => {
+	`SELECT * FROM transactions WHERE block_id is 0;`, (err, rows) => {
 	    if (err) {
 	    	console.log(err);
 	    	return false;
 	    }
 	    rows.forEach((row) => {
-	    	unverified_transactions.push(row);
+			unverified_transactions.push(row);
 	    });
 
 	    blockchain_db.all(`SELECT * FROM blocks;`, (err, rows) => {
