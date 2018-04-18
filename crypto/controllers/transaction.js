@@ -32,10 +32,10 @@ exports.transactionPost = [
     body('amount')
 	.exists()
 	.isLength({ min: 1 }).withMessage("Amount required")
-	.isInt().withMessage("Amount must be an integer"),
+	.isFloat().withMessage("Amount must be an integer"),
     
     sanitizeBody('to_id').trim().escape(),
-    sanitizeBody('amount').trim().escape().toInt(),
+    sanitizeBody('amount').trim().escape(),
     
     (req, res, next) => {
 	const errors = validationResult(req);
