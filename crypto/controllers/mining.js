@@ -108,7 +108,7 @@ exports.mine = function (req, res) {
 				}
 				
 				if (sol["MAX(id)"] != null) {
-					actual_id = sol["MAX(id)"];
+					actual_id = parseInt(sol["MAX(id)"]);
 				}
 
 				const timestamp = Math.floor(new Date() / 1000);
@@ -117,10 +117,8 @@ exports.mine = function (req, res) {
 				const hash = key.sign(buffer, "base64");
 				const proof = 'trivial';
 
-				console.log(buffer + "\n" + hash);
-
 				blockchain_db.run(`INSERT INTO blocks ('id', 'timestamp', 'hash', 'proof', 'parent_block') VALUES(?,?,?,?,?);`,
-					[ actual_id, timestamp, hash, proof, actual_id-1 ]
+					[ actual_id + 1, timestamp, hash, proof, actual_id ]
 				);
 
 				blockchain_db.run(`UPDATE transactions SET block_id = ? WHERE signature = ?;`,

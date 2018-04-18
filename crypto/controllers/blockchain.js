@@ -7,7 +7,8 @@ let blockchain_db = db.get_blockchain_db();
 exports.index = function(req, res) {
 
     let unverified_transactions = [];
-    let blockchain = [];
+	let blockchain = [];
+	let blocks = [];
 
     blockchain_db.all(
 	`SELECT * FROM transactions WHERE block_id is 0;`, (err, rows) => {
@@ -31,25 +32,44 @@ exports.index = function(req, res) {
 							id: row.id,
 							timestamp: row.timestamp
 						};
-						callback(obj);
+						// console.log(obj);
+						blockchain.push(obj);
 					}
-				}, function (obj) {
-					blockchain_db.all(`SELECT * FROM transactions WHERE block_id = ?`, obj.id, 
-						(err, rows) => {
+					callback();
+				}, function () {
+					// console.log("After - " + obj);
+					async.each(blockchain, 
+						(obj, callback) => {
+							blockchain_db.all(`SELECT * FROM transactions WHERE block_id = ?`, obj.id, 
+								(err, rows) => {
+									if (err) {
+										return callback(err);
+									}
+									async.each(rows, (row, callback) => {
+										obj.transactions = rows;
+										blocks.push(obj);
+										callback();
+									}, function () {
+										callback();
+									});
+								});
+						}, function (err) {
 							if (err) {
 								console.log(err);
-								return false;
+								return;
 							}
-							async.each(rows, (row, callback) => {
-								obj.transactions = rows;
-								blockchain.push(obj);
-								callback();
-							}, function () {
-								res.render('blockchain', {
-									title: 'Blockchain',
-									unverified_transactions: unverified_transactions,
-									blockchain: blockchain
-								});
+							blocks = blocks.filter(function(elem, pos) {
+								return blocks.indexOf(elem) == pos;
+							});
+
+							res.render('blockchain', {
+								title: 'Blockchain',
+								unverified_transactions: unverified_transactions,
+								blockchain: blocks.sort((a, b) => {
+									if (a.id > b.id) return -1;
+									else if (a.id == b.id) return 0;
+									else return 1;
+								})
 							});
 						});
 				});
