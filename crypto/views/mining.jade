@@ -52,5 +52,6 @@ block content
           .panel-body.text-center
             .col-sm-2
             .col-sm-8
-              h3
-                a.btn.btn-default(href='https://www.youtube.com/watch?v=sCNrK-n68CM', role='button') Mine
+              form.form-horizontal(action='/mining', method='POST')
+                .form-group
+                  button.btn.btn-success(type='mine') Mine

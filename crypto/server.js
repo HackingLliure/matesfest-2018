@@ -46,8 +46,8 @@ app.use([
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-	CreateController.index(req, res);
-	return;
+      CreateController.index(req, res);
+      return;
     }
     next();
 })
@@ -60,6 +60,7 @@ app.get('/transaction', TransactionController.transactionGet);
 app.post('/transaction', TransactionController.transactionPost);
 app.get('/about', AboutController.index);
 app.get('/mining', MiningController.index);
+app.post('/mining', MiningController.mine);
 
 // Production error handler
 if (app.get('env') === 'production') {
