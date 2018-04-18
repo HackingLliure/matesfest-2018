@@ -51,7 +51,7 @@ exports.index = function(req, res) {
 
 			async.each(txs, 
 				(value, callback) => {
-					blockchain_db.all(`SELECT * FROM transactions;`, // WHERE block_id is not 0;`, 
+					blockchain_db.all(`SELECT * FROM transactions WHERE block_id != 0 and block_id != '0';`, // WHERE block_id is not 0;`, 
 						(err, rows) => {
 							if (err) {
 								return callback(err);
