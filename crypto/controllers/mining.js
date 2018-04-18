@@ -107,7 +107,7 @@ exports.mine = function (req, res) {
 					return;
 				}
 				
-				if (sol["MAX(id)"] != null) {
+				if (sol && sol["MAX(id)"]) {
 					actual_id = parseInt(sol["MAX(id)"]);
 				}
 
